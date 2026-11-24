@@ -6,4 +6,7 @@ REASONS = {
     'INPUT_DISPUTE':'投入秤单或来源有争议','OUTPUT_DISPUTE':'灌装、损耗或返料秤单有争议',
     'INTAKE_MISMATCH':'投入称量与工作批总秤不符','NEGATIVE_REMAINDER':'去向净重大于总秤',
     'CYCLE':'返料图存在循环引用','UPSTREAM_PENDING':'上游工作批待证',
+    'FRACTIONAL_RETURN':'返料卷产地克重带小数，整克领/留无法对平原卷',
+    'WHOLE_GRAM_BLOCKED':'整克卷联凑不平，停签','SIGNING_DRIFT':'重算与已签卷联不一致，保留旧版卷联',
+    'NO_PACKAGE':'找不到可签发包装','DAMAGED_LEDGER':'签发台账不可读','BAD_REQUEST':'请求参数有误',
 }

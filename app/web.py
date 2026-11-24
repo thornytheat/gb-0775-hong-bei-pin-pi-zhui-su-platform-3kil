@@ -7,6 +7,8 @@ from app.config import RULE_VERSION
 from app.errors import RoastError
 from app.modules.proof.recall import recall
 from app.modules.proof.service import verify_and_export
+from app.modules.signing.ledger import SigningLedger
+from app.modules.signing.plan import build_plan, verify_plan
 from app.pipeline import compute
 from app.reasons import REASONS
 from app.source import receive
@@ -38,7 +40,22 @@ def counter(view='balance'):
         raise RoastError('NO_WORK','找不到该工作批',404)
     proof=verify_and_export(document) if document and view=='proof' else None
     packages=proof['packages'] if proof else recall(reports) if view=='proof' else {}
+    signing = None
+    if view == 'proof':
+        gram_plan = build_plan(reports)
+        verify_plan(gram_plan)
+        sealed = set()
+        ledger_updated_at = None
+        if document:
+            ledger = SigningLedger(cabinet()).read(key)
+            sealed = {item['package'] for item in ledger['sealed']}
+            ledger_updated_at = ledger['updated_at']
+        for item in gram_plan['packages']:
+            item['signed'] = item['package'] in sealed
+        gram_plan['signed_packages'] = sorted(sealed)
+        gram_plan['ledger_updated_at'] = ledger_updated_at
+        signing = gram_plan
     return render_template('base.html',view=view,panels=PANELS,records=reports,codebook=REASONS, sample=sample, key=key,
                            manifest=document['manifest'] if document else None, work=work, rule=RULE_VERSION,
-                           proof=proof,packages=packages,dest=DEST,mass=mass,
+                           proof=proof,packages=packages,dest=DEST,mass=mass,signing=signing,
                            history=cabinet().recent() if view=='runs' else [])

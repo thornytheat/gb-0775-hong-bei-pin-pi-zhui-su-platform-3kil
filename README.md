@@ -15,4 +15,6 @@
 
 `GET /api/lots/<phase>` 分阶段预览样例。向同路径 POST `{"files":{"origins":"...","jobs":"...","inputs":"...","outputs":"..."}}` 可试算自己的 CSV。`POST /api/runs` 接受同样的文件集合或 `{"sample":"dirty"}`。`GET /api/runs/<id>` 查归档，`POST /api/runs/<id>/rerun` 复算，`GET /api/export/<id>` 下载证据。
 
+签发页（配方证据签发）在分数证据之外另出交班整克卷联：每项产地克重只在相邻整克内取、各项相加等于包装整克净重；同卷返料多批拆投时领走＋留库按产地等于原卷。`GET /api/signing/runs/<id>` 看整克试算与停签卡点，`POST /api/signing/runs/<id>/issue` 传 `{"packages":["PK-A"]}` 逐批签发并锁定；重算与已签卷联冲突时报 `SIGNING_DRIFT` 并保留旧版卷联，凑不平的批报 `WHOLE_GRAM_BLOCKED` 并点名卡住的返料卷。
+
 [定义与边界](docs/DATA-DICTIONARY.md) 和 [模块与回归](docs/DEPTH.md) 记录完整规则。本机运行 `python -m pytest -q`。
